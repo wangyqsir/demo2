@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript" src='./src/react.js'></script>
+	<script type="text/javascript" src='./src/react-dom.js'></script>
+	<script type="text/javascript" src='./src/browser.min.js'></script>
+</head>
+	<style type="text/css">
+		body{
+			padding: 0;
+			background-color: #66ccff;
+
+		}
+		.tooListMain{
+			padding: 10px;
+			font-style: 16px;
+			border: 2px solid #fff;
+		}
+		.todoHeader{
+			padding: 10px;
+			font-style: 16px;
+			margin: 10px;
+			background-color: #0066ff;
+			color: #fff;
+			border: 2px solid blue;
+		}
+	</style>
+<body>
+	<div id="box"></div>
+</body>
+<script type="text/babel">
+	var getId=document.getElementById('box');
+	var ToDoList = React.createClass({
+		getInitialState:function(){
+				return {
+					items:[]
+				}
+			},
+		addItem:function(event){
+				event.preventDefault();
+				var itemArray = this.state.items;
+				itemArray.push({
+				//inputref在this.refs数组里
+					text:this.refs.inputref.value,
+					key:Date.now()
+				});
+				this.setState({
+					items:itemArray
+				})
+				this.refs.inputref.value = "";
+			},
+		render:function(){
+		//定义ref为了拿到dom节点
+			return (
+				<div className='todoListMain'>
+					<div className='todoHeader'>
+						<form onSubmit={this.addItem}>
+							<input type="text" ref='inputref' placeholder="请输入" />
+							<button>添加</button>
+						</form>
+					</div>
+					<SonList entries={this.state.items} />
+				</div>
+			)
+		}
+	})
+	var SonList = React.createClass({
+		removeItem:function(event){
+		var thisEntries = this.state.entries;
+			console.log(thisEntries)
+			thisEntries.splice(event.target.getAttribute('data-displayName'),1);
+			this.setState({
+				entries:thisEntries
+			})
+		},
+		getInitialState:function(){
+				return {
+					entries:this.props.entries
+				}
+			},
+		render:function(){
+			var _this=this
+			function createTask(item,index){
+				return (<li key={item.key}>{item.text} <button onClick={_this.removeItem} data-displayName={index}>删除</button></li>)
+			}
+			var ListItems = this.state.entries.map(createTask);
+			return (
+				<ul>
+					{ListItems}
+				</ul>
+			)
+		}
+	})
+	ReactDOM.render(<ToDoList />,getId);
+</script>
+<script type="text/javascript">
+	var arr=[1,2,3,4];
+	var arr1=arr;
+	arr1.push(5);
+	console.log(arr);
+	console.log(arr1);
+</script>
+</html>
