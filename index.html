@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	hello
+</body>
+<script type="text/javascript">
+function ajax(){
+	var CodeAjax = new AjaxClass();
+	CodeAjax.Method = "GET"; // 设置请求方式为POST  
+	CodeAjax.Url = "mysqllearn1.php" // URL为default.asp  
+	CodeAjax.Async = true; // 是否异步  
+	CodeAjax.Send(); // 发送请求
+	CodeAjax.CallBack = function(data){
+		console.log(data);
+
+	}
+}
+ajax();
+
+	function AjaxClass() {
+	var XmlHttp = false;
+	try {
+		XmlHttp = new XMLHttpRequest(); //FireFox专有
+	} catch(e) {
+		try {
+			XmlHttp = new ActiveXObject("MSXML2.XMLHTTP");
+		} catch(e2) {
+			try {
+				XmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+			} catch(e3) {
+				alert("你的浏览器不支持XMLHTTP对象，请升级到IE6以上版本！");
+				XmlHttp = false;
+			}
+		}
+	}
+	var me = this;
+	this.Method = "POST";
+	this.Url = "";
+	this.Async = true;
+	this.Arg = "";
+	this.CallBack = function() {};
+	this.Loading = function() {};
+	this.Send = function() {
+		if(this.Url == "") {
+			return;
+		}
+		if(!XmlHttp) {
+			return;
+		}
+
+		XmlHttp.open(this.Method, this.Url, this.Async);
+		if(this.Method == "POST") {
+			XmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		}
+		XmlHttp.onreadystatechange = function() {
+			if(XmlHttp.readyState == 4) {
+				var Result = false;
+				if(XmlHttp.status == 200) {
+					Result = XmlHttp.responseText;
+				}
+				XmlHttp = null;
+
+				me.CallBack(Result);
+			} else {
+				me.Loading();
+			}
+		};
+		if(this.Method == "POST") {
+			XmlHttp.send(this.Arg);
+		} else {
+			XmlHttp.send(null);
+		}
+	}
+}
+</script>
+</html>
